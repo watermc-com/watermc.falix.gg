@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water MC | Minecraft Server</title>
+    <style>
+        /* --- Global Resets --- */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Container - Auto Adjusts Width --- */
+        .container {
+            width: 90%; /* Uses 90% of the screen width */
+            max-width: 800px; /* But never gets bigger than 800px */
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* --- Corner Logo --- */
+        .corner-logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 8%; /* Responsive width based on screen */
+            min-width: 50px; /* Never gets smaller than 50px */
+            max-width: 80px; /* Never gets bigger than 80px */
+            aspect-ratio: 1 / 1; /* Keeps it a perfect circle */
+            border-radius: 50%;
+            border: 3px solid #00d2ff;
+            object-fit: cover;
+            animation: logoPulse 3s infinite ease-in-out;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.6);
+            z-index: 100;
+        }
+
+        /* --- Title --- */
+        h1 {
+            font-size: clamp(40px, 8vw, 60px); /* Smart font sizing */
+            margin-top: 50px;
+            color: #00d2ff;
+            text-shadow: 0 0 20px #00d2ff;
+            margin-bottom: 10px;
+        }
+
+        /* --- IP Box --- */
+        .ip-box {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #00d2ff;
+            display: inline-flex; /* Shrinks to fit content */
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            width: auto;
+            max-width: 100%;
+        }
+
+        .ip-text {
+            font-size: clamp(16px, 4vw, 24px); /* Responsive font */
+            font-weight: bold;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background: #00d2ff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .copy-btn:hover {
+            background: #0099cc;
+        }
+
+        /* --- Buttons --- */
+        .buttons {
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap; /* Allows buttons to wrap on small screens */
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn {
+            flex: 1 1 150px; /* Grows and shrinks, basis 150px */
+            max-width: 250px; /* Max width for desktop */
+            padding: 15px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: clamp(14px, 2.5vw, 18px);
+            transition: transform 0.2s;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-store { background: #ff9900; color: white; }
+        .btn-discord { background: #5865F2; color: white; }
+        .btn-tiktok { background: linear-gradient(45deg, #00f2ea, #ff0050); color: white; }
+        .btn-vote { background: #2ecc71; color: white; border: 2px solid #27ae60; }
+
+        /* --- Status Section --- */
+        .status {
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            width: 100%;
+        }
+
+        .online { color: #00ff00; }
+
+        /* --- Modal Styles --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            background-color: #1e1e1e;
+            margin: 15% auto;
+            padding: 30px;
+            border: 2px solid #00d2ff;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 0 20px #00d2ff;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover { color: #fff; }
+
+        .vote-option {
+            display: block;
+            width: 100%;
+            padding: 15px 0;
+            margin: 15px 0;
+            font-size: 18px;
+            background: #2ecc71;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .vote-option:hover { background: #27ae60; transform: scale(1.02); }
+        
+        .vote-option:last-child:hover { background: #3498db; }
+
+        /* --- Animations --- */
+        @keyframes logoPulse {
+            0% { transform: scale(1); box-shadow: 0 0 15px rgba(0, 210, 255, 0.6); }
+            50% { transform: scale(1.1); box-shadow: 0 0 30px rgba(0, 210, 255, 1), 0 0 10px white; }
+            100% { transform: scale(1); box-shadow: 0 0 15px rgba(0, 210, 255, 0.6); }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Logo -->
+    <img src="https://cdn.discordapp.com/attachments/1456202106741461166/1474384916899692615/A734E1B9-9B91-49E6-8EAC-1DE1C0241414.png?ex=6999a774&is=699855f4&hm=06a2092d741b47c0aedecb84d4dc32dc735e1c884871d84b35954cd254c333ca" 
+         alt="Water MC Logo" 
+         class="corner-logo">
+
+    <div class="container">
+        <h1>Water MC</h1>
+        <p>Welcome to the ultimate Minecraft experience!</p>
+
+        <div class="ip-box">
+            <span class="ip-text" id="server-ip">watermc.falix.com</span>
+            <button class="copy-btn" onclick="copyIP()">Copy</button>
+        </div>
+
+        <div class="buttons">
+            <a href=" https://watersmc.craftingstore.net/" class="btn btn-store" target="_blank">🛒 Webstore</a>
+            <a href="https://discord.gg/42592Mj5NY" class="btn btn-discord" target="_blank">💬 Discord</a>
+            <a href="https://www.tiktok.com/@water_m.c?_r=1&_t=ZT-92sNFOOQLiX" class="btn btn-tiktok" target="_blank">🎵 TikTok</a>
+            <button class="btn btn-vote" onclick="openVoteModal()">🗳️ Vote</button>
+        </div>
+
+        <div class="status">
+            <h2>Server Status</h2>
+            <p class="online">● Online</p>
+            <p>Version: 1.20.1</p>
+            <p>Players: 0/100</p>
+        </div>
+    </div>
+
+    <!-- Vote Modal -->
+    <div id="voteModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeVoteModal()">&times;</span>
+            <h2>Vote for Water MC</h2>
+            <p>Help us grow by voting on these platforms!</p>
+            <a href="https://minecraft-mp.com/server-s352844" target="_blank" class="vote-option">🚀 Vote on Minecraft-MP</a>
+            <a href="https://www.minerank.com/watermc/stats" target="_blank" class="vote-option">🌍 Vote on PlanetMinecraft</a>
+        </div>
+    </div>
+
+    <script>
+        function copyIP() {
+            const ip = document.getElementById('server-ip').innerText;
+            navigator.clipboard.writeText(ip);
+            alert("IP Copied: " + ip);
+        }
+
+        function openVoteModal() { document.getElementById('voteModal').style.display = 'block'; }
+        function closeVoteModal() { document.getElementById('voteModal').style.display = 'none'; }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('voteModal');
+            if (event.target == modal) { modal.style.display = 'none'; }
+        }
+    </script>
+</body>
+
+</html>
