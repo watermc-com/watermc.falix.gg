@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WaterMC Store | Medieval Market</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --aqua: #00FFFF;
+            --gold: #FFD700;
+            --stone-dark: #1a1a1a;
+            --stone-light: #2b2b2b;
+            --red-accent: #8B0000;
+        }
+        body {
+            font-family: 'Cinzel', serif;
+            background-color: #0f0f0f;
+            background-image: radial-gradient(circle at center, #2c2c2c 0%, #0f0f0f 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none; z-index: -1;
+        }
+        header { text-align: center; padding: 40px 20px; }
+        h1 { font-family: 'Press Start 2P', cursive; color: var(--aqua); text-shadow: 4px 4px 0px #005f5f; font-size: 2.5rem; margin-bottom: 10px; }
+        .subtitle { font-size: 1.2rem; color: #aaa; text-transform: uppercase; letter-spacing: 3px; border-bottom: 2px solid var(--red-accent); padding-bottom: 5px; }
+        
+        .store-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; max-width: 1200px; width: 100%; padding: 20px; }
+        .card { background: var(--stone-dark); border: 4px solid #444; border-radius: 8px; width: 300px; padding: 30px; text-align: center; transition: 0.3s; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.7); }
+        .card:hover { transform: translateY(-10px); border-color: var(--aqua); box-shadow: 0 0 15px var(--aqua); }
+        .icon { font-size: 4rem; margin-bottom: 20px; display: block; }
+        .card h2 { color: var(--gold); margin-bottom: 15px; font-weight: 700; }
+        .card p { margin-bottom: 25px; line-height: 1.5; color: #ccc; }
+        .btn { background: #333; color: white; border: 2px solid var(--gold); padding: 12px 25px; font-family: 'Cinzel', serif; font-weight: bold; font-size: 1rem; cursor: pointer; text-transform: uppercase; transition: all 0.2s; width: 100%; }
+        .btn:hover { background: var(--gold); color: black; box-shadow: 0 0 10px var(--gold); }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.3s; z-index: 1000; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content { background: var(--stone-light); border: 4px double var(--gold); padding: 40px; width: 90%; max-width: 500px; text-align: center; border-radius: 4px; position: relative; box-shadow: 0 0 30px rgba(255, 215, 0, 0.2); }
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 2rem; color: #666; cursor: pointer; }
+        .close-btn:hover { color: var(--red-accent); }
+        .modal-title { font-size: 1.8rem; color: var(--gold); margin-bottom: 20px; }
+        input[type="text"] { width: 100%; padding: 15px; background: #111; border: 2px solid #555; color: white; font-family: 'Press Start 2P', cursive; font-size: 0.8rem; text-align: center; outline: none; margin-bottom: 20px; }
+        input[type="text"]:focus { border-color: var(--aqua); }
+        .proceed-btn { background: var(--red-accent); border: 2px solid #ff4444; color: white; padding: 15px; width: 100%; font-family: 'Cinzel', serif; font-weight: bold; cursor: pointer; font-size: 1.1rem; transition: 0.2s; }
+        .proceed-btn:hover { background: #ff4444; box-shadow: 0 0 15px #ff4444; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>WaterMC</h1>
+        <div class="subtitle">Royal Store</div>
+    </header>
+
+    <div class="store-container">
+        <!-- RANK OPTION -->
+        <div class="card">
+            <span class="icon">👑</span>
+            <h2>Buy Ranks</h2>
+            <p>Ascend the hierarchy. Unlock perks and fly rights.</p>
+            <button class="btn" onclick="openPopup('Rank')">Select Rank</button>
+        </div>
+        
+        <!-- COIN OPTION -->
+        <div class="card">
+            <span class="icon">💰</span>
+            <h2>Buy Coins</h2>
+            <p>Acquire the currency of the realm.</p>
+            <button class="btn" onclick="openPopup('Coin')">Buy Coins</button>
+        </div>
+        
+        <!-- BASKET OPTION -->
+        <div class="card">
+            <span class="icon">🧺</span>
+            <h2>Your Basket</h2>
+            <p>Review your selection before paying.</p>
+            <button class="btn" style="border-color: #aaa;" onclick="window.location.href='store.html'">View Cart</button>
+        </div>
+    </div>
+
+    <!-- POP UP MODAL -->
+    <div class="modal-overlay" id="usernameModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <h2 class="modal-title" id="modalTitle">Enter Username</h2>
+            <p style="margin-bottom: 20px; color: #ccc;">Please enter your Minecraft username to proceed.</p>
+            <div class="input-group">
+                <input type="text" id="usernameInput" placeholder="Steve123" maxlength="16" autocomplete="off">
+            </div>
+            <button class="proceed-btn" onclick="submitUsername()">Proceed to Store</button>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('usernameModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const usernameInput = document.getElementById('usernameInput');
+        let currentAction = '';
+
+        function openPopup(action) {
+            currentAction = action;
+            modalTitle.innerText = "Purchase " + action;
+            modal.classList.add('active');
+            usernameInput.value = '';
+            usernameInput.focus();
+        }
+
+        function closePopup() {
+            modal.classList.remove('active');
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closePopup();
+            }
+        }
+
+        function submitUsername() {
+            const username = usernameInput.value.trim();
+
+            if (username === "") {
+                alert("Please enter a username!");
+                return;
+            }
+
+            // REDIRECT BASED ON ACTION (Rank or Coin)
+            if (currentAction === 'Rank') {
+                window.location.href = `store.html?user=${encodeURIComponent(username)}`;
+            } else if (currentAction === 'Coin') {
+                window.location.href = `coin.html?user=${encodeURIComponent(username)}`;
+            }
+            
+            closePopup();
+        }
+    </script>
+</body>
+</html>
