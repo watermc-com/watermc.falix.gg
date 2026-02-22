@@ -134,7 +134,11 @@
             width: 100%;
         }
 
-        .online { color: #00ff00; }
+        /* Changed to Green for Maintenance */
+        .maintenance { 
+            color: #00ff00; 
+            text-shadow: 0 0 10px #00ff00;
+        }
 
         /* --- Modal Styles --- */
         .modal {
@@ -224,7 +228,8 @@
 
         <div class="status">
             <h2>Server Status</h2>
-            <p class="Online">● Online </p>
+            <!-- Changed from Online to Maintenance with green color -->
+            <p class="maintenance">● Maintenance</p>
             <p>Version: 1.20.1</p>
             <p>Players: 0/100</p>
         </div>
@@ -259,9 +264,3 @@
 </body>
 
 </html>
-
-
-
-
-
-
