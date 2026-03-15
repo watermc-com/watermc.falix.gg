@@ -200,7 +200,12 @@ const confirmBuy=confirm(`Buy ${rank.name} for $${rank.price}?`);
 if(!confirmBuy) return;
 
 
-/* SEND TO DISCORD */
+/* RANDOM ORDER ID */
+
+const orderID=Math.floor(1000+Math.random()*9000);
+
+
+/* SEND TO DISCORD WEBHOOK */
 
 fetch("https://discord.com/api/webhooks/1482740372584140862/0FNPQ3kAxfcCKD9NP7_KIAjbMDnGqlvsreq5CPnmb0z5Yza6ClRn8CwZHPAAKWHZk6iy",{
 
@@ -212,18 +217,54 @@ headers:{
 
 body:JSON.stringify({
 
-content:
-`🛒 **New Store Purchase**
+content:"<@&1475169763528282272>",
 
-👤 Username: ${username}
-💎 Rank: ${rank.name}
-💰 Price: $${rank.price}`
+embeds:[{
+
+title:"🛒 New Store Purchase",
+
+color:3447003,
+
+fields:[
+
+{
+name:"👤 Player",
+value:username,
+inline:true
+},
+
+{
+name:"💎 Rank",
+value:rank.name,
+inline:true
+},
+
+{
+name:"💰 Price",
+value:`$${rank.price}`,
+inline:true
+},
+
+{
+name:"📦 Order ID",
+value:`#${orderID}`,
+inline:false
+}
+
+],
+
+footer:{
+text:"WaterMC Store"
+}
+
+}]
 
 })
 
 });
 
-alert("Your order was sent to staff! Please contact us on Discord.");
+
+alert("Your order was sent! Staff have been notified.");
 
 }
 
