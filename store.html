@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>WaterMC Store | Ranks</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
@@ -15,8 +17,6 @@
 --aqua:#00FFFF;
 --gold:#FFD700;
 --dark:#1a1a1a;
---light:#2b2b2b;
---red:#8B0000;
 --text:#e0e0e0;
 }
 
@@ -123,75 +123,6 @@ color:black;
 box-shadow:0 0 10px var(--gold);
 }
 
-/* Popup */
-
-.modal-overlay{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.85);
-display:flex;
-justify-content:center;
-align-items:center;
-opacity:0;
-visibility:hidden;
-transition:0.3s;
-z-index:1000;
-}
-
-.modal-overlay.active{
-opacity:1;
-visibility:visible;
-}
-
-.modal-content{
-background:var(--light);
-border:4px double var(--gold);
-padding:40px;
-width:90%;
-max-width:500px;
-text-align:center;
-border-radius:6px;
-position:relative;
-}
-
-.close-btn{
-position:absolute;
-top:10px;
-right:15px;
-font-size:2rem;
-cursor:pointer;
-color:#777;
-}
-
-.close-btn:hover{
-color:red;
-}
-
-.modal-title{
-color:var(--gold);
-margin-bottom:20px;
-}
-
-.discord-btn{
-background:#5865F2;
-border:2px solid white;
-color:white;
-padding:15px;
-width:100%;
-font-size:1.1rem;
-cursor:pointer;
-transition:0.2s;
-margin-top:20px;
-}
-
-.discord-btn:hover{
-background:#4752C4;
-box-shadow:0 0 15px #5865F2;
-}
-
 </style>
 </head>
 
@@ -209,33 +140,6 @@ box-shadow:0 0 15px #5865F2;
 <div class="rank-grid" id="rankGrid"></div>
 
 </div>
-
-
-<!-- Checkout Popup -->
-
-<div class="modal-overlay" id="checkoutModal">
-
-<div class="modal-content">
-
-<span class="close-btn" onclick="closeCheckout()">&times;</span>
-
-<h2 class="modal-title">Finalize Purchase</h2>
-
-<p style="color:#ccc;margin-bottom:15px;">
-To complete your order please create a ticket on our Discord server.
-</p>
-
-<p style="color:var(--aqua);font-weight:bold;">
-Click below to open the ticket channel.
-</p>
-
-<button class="discord-btn" onclick="redirectDiscord()">
-Create Kit Ticket
-</button>
-
-</div>
-</div>
-
 
 <script>
 
@@ -293,25 +197,33 @@ if(!username) return;
 
 const confirmBuy=confirm(`Buy ${rank.name} for $${rank.price}?`);
 
-if(confirmBuy){
-
-document.getElementById("checkoutModal").classList.add("active");
-
-}
-
-}
+if(!confirmBuy) return;
 
 
-function closeCheckout(){
+/* SEND TO DISCORD */
 
-document.getElementById("checkoutModal").classList.remove("active");
+fetch("https://discord.com/api/webhooks/1482740372584140862/0FNPQ3kAxfcCKD9NP7_KIAjbMDnGqlvsreq5CPnmb0z5Yza6ClRn8CwZHPAAKWHZk6iy",{
 
-}
+method:"POST",
 
+headers:{
+"Content-Type":"application/json"
+},
 
-function redirectDiscord(){
+body:JSON.stringify({
 
-window.location.href="https://discord.gg/JrAtNSZwwe";
+content:
+`🛒 **New Store Purchase**
+
+👤 Username: ${username}
+💎 Rank: ${rank.name}
+💰 Price: $${rank.price}`
+
+})
+
+});
+
+alert("Your order was sent to staff! Please contact us on Discord.");
 
 }
 
