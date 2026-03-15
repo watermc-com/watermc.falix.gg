@@ -123,6 +123,8 @@ color:black;
 box-shadow:0 0 10px var(--gold);
 }
 
+/* Popup */
+
 .modal-overlay{
 position:fixed;
 top:0;
@@ -220,7 +222,7 @@ box-shadow:0 0 15px #5865F2;
 <h2 class="modal-title">Finalize Purchase</h2>
 
 <p style="color:#ccc;margin-bottom:15px;">
-To complete your order please create a ticket on our Discord.
+To complete your order please create a ticket on our Discord server.
 </p>
 
 <p style="color:var(--aqua);font-weight:bold;">
@@ -237,20 +239,24 @@ Create Kit Ticket
 
 <script>
 
+/* RANK DATA */
+
 const ranks=[
 
-{id:1,name:"<span style='color:black'>Coal Rank</span>",price:7.99},
+{id:1,name:"Coal Rank",color:"black",price:7.99},
 
-{id:2,name:"<span style='color:gold'>Gold Rank</span>",price:10.99},
+{id:2,name:"Gold Rank",color:"gold",price:10.99},
 
-{id:3,name:"<span style='color:aqua'>Diamond Rank</span>",price:16.99},
+{id:3,name:"Diamond Rank",color:"aqua",price:16.99},
 
-{id:4,name:"<span style='color:lime'>Emerald Rank</span>",price:20.99},
+{id:4,name:"Emerald Rank",color:"lime",price:20.99},
 
-{id:5,name:"<span style='color:gray'>Netherite Rank</span>",price:25.99}
+{id:5,name:"Netherite Rank",color:"gray",price:25.99}
 
 ];
 
+
+/* CREATE RANK CARDS */
 
 const grid=document.getElementById("rankGrid");
 
@@ -262,7 +268,7 @@ card.className="rank-item";
 
 card.innerHTML=`
 
-<div class="rank-name">${rank.name}</div>
+<div class="rank-name" style="color:${rank.color}">${rank.name}</div>
 
 <div class="rank-price">$${rank.price}</div>
 
@@ -274,6 +280,8 @@ grid.appendChild(card);
 
 });
 
+
+/* BUY FUNCTION */
 
 function buyNow(id){
 
