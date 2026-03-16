@@ -3,79 +3,98 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WaterMC Store | Medieval Market</title>
+<title>WaterMC Store | Ranks</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
-:root {
-    --aqua: #00FFFF;
-    --gold: #FFD700;
-    --stone-dark: #1a1a1a;
-    --stone-light: #2b2b2b;
-    --red-accent: #8B0000;
+:root{
+--aqua:#00FFFF;
+--gold:#FFD700;
+--dark:#1a1a1a;
+--text:#e0e0e0;
 }
-
-body {
-    font-family: 'Cinzel', serif;
-    background-color: #0f0f0f;
-    background-image: radial-gradient(circle at center, #2c2c2c 0%, #0f0f0f 100%);
-    color: #e0e0e0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-header { text-align: center; padding: 40px 20px; }
-h1 { font-family: 'Press Start 2P', cursive; color: var(--aqua); text-shadow: 4px 4px 0px #005f5f; font-size: 2.5rem; margin-bottom: 10px; }
-.subtitle { font-size: 1.2rem; color: #aaa; text-transform: uppercase; letter-spacing: 3px; border-bottom: 2px solid var(--red-accent); padding-bottom: 5px; }
-
-.store-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; max-width: 1200px; width: 100%; padding: 20px; }
-.card { background: var(--stone-dark); border: 4px solid #444; border-radius: 8px; width: 300px; padding: 30px; text-align: center; transition: 0.3s; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.7); cursor: pointer; }
-.card:hover { transform: translateY(-10px); border-color: var(--aqua); box-shadow: 0 0 15px var(--aqua); }
-.icon { font-size: 4rem; margin-bottom: 20px; display: block; }
-.card h2 { color: var(--gold); margin-bottom: 15px; font-weight: 700; }
-.card p { margin-bottom: 25px; line-height: 1.5; color: #ccc; }
-.btn { background: #333; color: white; border: 2px solid var(--gold); padding: 12px 25px; font-family: 'Cinzel', serif; font-weight: bold; font-size: 1rem; cursor: pointer; text-transform: uppercase; transition: all 0.2s; width: 100%; }
-.btn:hover { background: var(--gold); color: black; box-shadow: 0 0 10px var(--gold); }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Cinzel',serif;background:#0f0f0f;color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+header{text-align:center;padding:40px 20px;border-bottom:2px solid #008b8b;width:100%;}
+h1{font-family:'Press Start 2P',cursive;color:var(--aqua);font-size:2rem;text-shadow:4px 4px 0px #005f5f;margin-bottom:10px;}
+.subtitle{letter-spacing:3px;color:#aaa;}
+.main-layout{max-width:1200px;width:100%;padding:40px 20px;}
+.section-title{color:var(--gold);margin-bottom:20px;border-left:5px solid var(--aqua);padding-left:15px;font-size:1.5rem;}
+.rank-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
+.rank-item{background:var(--dark);border:2px solid #444;padding:20px;border-radius:6px;text-align:center;transition:0.3s;}
+.rank-item:hover{border-color:var(--aqua);transform:translateY(-5px);box-shadow:0 5px 15px rgba(0,255,255,0.2);}
+.rank-name{font-size:1.4rem;margin-bottom:10px;font-weight:bold;}
+.rank-price{color:var(--gold);font-family:'Press Start 2P';font-size:0.8rem;margin-bottom:15px;}
+.btn-buy{background:transparent;border:2px solid var(--gold);color:var(--gold);padding:10px;width:100%;font-weight:bold;cursor:pointer;transition:0.2s;text-transform:uppercase;}
+.btn-buy:hover{background:var(--gold);color:black;box-shadow:0 0 10px var(--gold);}
 </style>
 </head>
 <body>
 
 <header>
-    <h1>WaterMC</h1>
-    <div class="subtitle">Royal Store</div>
+<h1>WaterMC</h1>
+<div class="subtitle">Official Server Store</div>
 </header>
 
-<div class="store-container">
-    <!-- Buy Ranks -->
-    <div class="card" onclick="redirectDiscord('Rank')">
-        <span class="icon">👑</span>
-        <h2>Buy Ranks</h2>
-        <p>Ascend the hierarchy. Unlock perks and fly rights.</p>
-        <button class="btn">Buy Rank</button>
-    </div>
-
-    <!-- Buy Coins -->
-    <div class="card" onclick="redirectDiscord('Coin')">
-        <span class="icon">💰</span>
-        <h2>Buy Coins</h2>
-        <p>Acquire the currency of the realm.</p>
-        <button class="btn">Buy Coins</button>
-    </div>
+<div class="main-layout">
+<h2 class="section-title">Select Your Rank</h2>
+<div class="rank-grid" id="rankGrid"></div>
 </div>
 
 <script>
-const CLIENT_ID = "YOUR_DISCORD_CLIENT_ID";
-const REDIRECT_URI = "https://watermc-discord-login.YOURUSERNAME.repl.co/auth"; // your Replit backend
+const ranks=[
+{id:1,name:"Coal Rank",color:"black",price:7.99},
+{id:2,name:"Gold Rank",color:"gold",price:10.99},
+{id:3,name:"Diamond Rank",color:"aqua",price:16.99},
+{id:4,name:"Emerald Rank",color:"lime",price:20.99},
+{id:5,name:"Netherite Rank",color:"gray",price:25.99}
+];
 
-function redirectDiscord(action) {
-    // Redirect to Discord OAuth2
-    const url = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI + "?action=" + action)}&response_type=code&scope=identify`;
-    window.location.href = url;
+const grid=document.getElementById("rankGrid");
+ranks.forEach(rank=>{
+    const card=document.createElement("div");
+    card.className="rank-item";
+    card.innerHTML=`
+    <div class="rank-name" style="color:${rank.color}">${rank.name}</div>
+    <div class="rank-price">$${rank.price}</div>
+    <button class="btn-buy" onclick="buyNow(${rank.id})">Buy Now</button>`;
+    grid.appendChild(card);
+});
+
+// Get Discord username from localStorage (set after OAuth login)
+const discordUser = localStorage.getItem("discordUser") || "Unknown User";
+
+function buyNow(id){
+    const rank = ranks.find(r=>r.id===id);
+
+    const confirmBuy = confirm(`Buy ${rank.name} for $${rank.price}?`);
+    if(!confirmBuy) return;
+
+    const orderID = Math.floor(1000 + Math.random()*9000);
+
+    // Send to Discord Webhook
+    fetch("YOUR_DISCORD_WEBHOOK_URL",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            content:"<@&1475169763528282272>",
+            embeds:[{
+                title:"🛒 New Store Purchase",
+                color:3447003,
+                fields:[
+                    {name:"💬 Discord User", value:discordUser, inline:true},
+                    {name:"💎 Rank", value:rank.name, inline:true},
+                    {name:"💰 Price", value:`$${rank.price}`, inline:true},
+                    {name:"📦 Order ID", value:`#${orderID}`, inline:false}
+                ],
+                footer:{text:"WaterMC Store"}
+            }]
+        })
+    });
+
+    alert(`Your order has been sent! Discord user: ${discordUser}`);
 }
 </script>
 
