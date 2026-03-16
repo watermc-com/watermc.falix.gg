@@ -5,11 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WaterMC Store | Ranks</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
+
 :root{
 --aqua:#00FFFF;
 --gold:#FFD700;
@@ -17,7 +16,11 @@
 --text:#e0e0e0;
 }
 
-*{box-sizing:border-box;margin:0;padding:0;}
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
 
 body{
 font-family:'Cinzel',serif;
@@ -40,7 +43,6 @@ h1{
 font-family:'Press Start 2P',cursive;
 color:var(--aqua);
 font-size:2rem;
-text-shadow:4px 4px 0px #005f5f;
 margin-bottom:10px;
 }
 
@@ -81,7 +83,6 @@ transition:0.3s;
 .rank-item:hover{
 border-color:var(--aqua);
 transform:translateY(-5px);
-box-shadow:0 5px 15px rgba(0,255,255,0.2);
 }
 
 .rank-name{
@@ -105,15 +106,13 @@ padding:10px;
 width:100%;
 font-weight:bold;
 cursor:pointer;
-transition:0.2s;
-text-transform:uppercase;
 }
 
 .btn-buy:hover{
 background:var(--gold);
 color:black;
-box-shadow:0 0 10px var(--gold);
 }
+
 </style>
 </head>
 
@@ -125,8 +124,11 @@ box-shadow:0 0 10px var(--gold);
 </header>
 
 <div class="main-layout">
+
 <h2 class="section-title">Select Your Rank</h2>
+
 <div class="rank-grid" id="rankGrid"></div>
+
 </div>
 
 <script>
@@ -154,45 +156,64 @@ card.innerHTML=`
 grid.appendChild(card);
 });
 
-const discordUser = localStorage.getItem("discordUser");
-
-if(!discordUser){
-alert("Please login with Discord first.");
-window.location.href="/watermc_store.html";
-}
+const discordUser = localStorage.getItem("discordUser") || "Unknown User";
 
 function buyNow(id){
 
 const rank=ranks.find(r=>r.id===id);
 
-const confirmBuy=confirm(`Buy ${rank.name} for $${rank.price}?`);
+const mcUser = prompt("Enter your Minecraft username");
+
+if(!mcUser){
+alert("Minecraft username required");
+return;
+}
+
+const confirmBuy = confirm(`Buy ${rank.name} for $${rank.price}?`);
 
 if(!confirmBuy) return;
 
-const orderID="WM"+Date.now();
+const orderID="WM"+Math.floor(100000+Math.random()*900000);
 
-fetch("https://discord.com/api/webhooks/1482740372584140862/0FNPQ3kAxfcCKD9NP7_KIAjbMDnGqlvsreq5CPnmb0z5Yza6ClRn8CwZHPAAKWHZk6iy",{
+fetch("YOUR_DISCORD_WEBHOOK_URL",{
+
 method:"POST",
+
 headers:{
 "Content-Type":"application/json"
 },
+
 body:JSON.stringify({
-content:"<@&1475169763528282272>",
+
+content:"New Store Purchase",
+
 embeds:[{
-title:"🛒 New Store Purchase",
+
+title:"WaterMC Purchase",
+
 color:3447003,
+
 fields:[
-{name:"💬 Discord User",value:discordUser,inline:true},
-{name:"💎 Rank",value:rank.name,inline:true},
-{name:"💰 Price",value:`$${rank.price}`,inline:true},
-{name:"📦 Order ID",value:orderID,inline:false}
-],
-footer:{text:"WaterMC Store"}
+
+{name:"Discord User",value:discordUser,inline:true},
+
+{name:"Minecraft Username",value:mcUser,inline:true},
+
+{name:"Rank",value:rank.name,inline:true},
+
+{name:"Price",value:`$${rank.price}`,inline:true},
+
+{name:"Order ID",value:orderID,inline:false}
+
+]
+
 }]
+
 })
+
 });
 
-alert("Order sent! Staff will process it soon.");
+alert("Order sent to staff!");
 
 }
 
