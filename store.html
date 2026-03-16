@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WaterMC Store | Ranks</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -15,22 +16,107 @@
 --dark:#1a1a1a;
 --text:#e0e0e0;
 }
+
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Cinzel',serif;background:#0f0f0f;color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;}
-header{text-align:center;padding:40px 20px;border-bottom:2px solid #008b8b;width:100%;}
-h1{font-family:'Press Start 2P',cursive;color:var(--aqua);font-size:2rem;text-shadow:4px 4px 0px #005f5f;margin-bottom:10px;}
-.subtitle{letter-spacing:3px;color:#aaa;}
-.main-layout{max-width:1200px;width:100%;padding:40px 20px;}
-.section-title{color:var(--gold);margin-bottom:20px;border-left:5px solid var(--aqua);padding-left:15px;font-size:1.5rem;}
-.rank-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
-.rank-item{background:var(--dark);border:2px solid #444;padding:20px;border-radius:6px;text-align:center;transition:0.3s;}
-.rank-item:hover{border-color:var(--aqua);transform:translateY(-5px);box-shadow:0 5px 15px rgba(0,255,255,0.2);}
-.rank-name{font-size:1.4rem;margin-bottom:10px;font-weight:bold;}
-.rank-price{color:var(--gold);font-family:'Press Start 2P';font-size:0.8rem;margin-bottom:15px;}
-.btn-buy{background:transparent;border:2px solid var(--gold);color:var(--gold);padding:10px;width:100%;font-weight:bold;cursor:pointer;transition:0.2s;text-transform:uppercase;}
-.btn-buy:hover{background:var(--gold);color:black;box-shadow:0 0 10px var(--gold);}
+
+body{
+font-family:'Cinzel',serif;
+background:#0f0f0f;
+color:var(--text);
+min-height:100vh;
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+
+header{
+text-align:center;
+padding:40px 20px;
+border-bottom:2px solid #008b8b;
+width:100%;
+}
+
+h1{
+font-family:'Press Start 2P',cursive;
+color:var(--aqua);
+font-size:2rem;
+text-shadow:4px 4px 0px #005f5f;
+margin-bottom:10px;
+}
+
+.subtitle{
+letter-spacing:3px;
+color:#aaa;
+}
+
+.main-layout{
+max-width:1200px;
+width:100%;
+padding:40px 20px;
+}
+
+.section-title{
+color:var(--gold);
+margin-bottom:20px;
+border-left:5px solid var(--aqua);
+padding-left:15px;
+font-size:1.5rem;
+}
+
+.rank-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+}
+
+.rank-item{
+background:var(--dark);
+border:2px solid #444;
+padding:20px;
+border-radius:6px;
+text-align:center;
+transition:0.3s;
+}
+
+.rank-item:hover{
+border-color:var(--aqua);
+transform:translateY(-5px);
+box-shadow:0 5px 15px rgba(0,255,255,0.2);
+}
+
+.rank-name{
+font-size:1.4rem;
+margin-bottom:10px;
+font-weight:bold;
+}
+
+.rank-price{
+color:var(--gold);
+font-family:'Press Start 2P';
+font-size:0.8rem;
+margin-bottom:15px;
+}
+
+.btn-buy{
+background:transparent;
+border:2px solid var(--gold);
+color:var(--gold);
+padding:10px;
+width:100%;
+font-weight:bold;
+cursor:pointer;
+transition:0.2s;
+text-transform:uppercase;
+}
+
+.btn-buy:hover{
+background:var(--gold);
+color:black;
+box-shadow:0 0 10px var(--gold);
+}
 </style>
 </head>
+
 <body>
 
 <header>
@@ -44,6 +130,7 @@ h1{font-family:'Press Start 2P',cursive;color:var(--aqua);font-size:2rem;text-sh
 </div>
 
 <script>
+
 const ranks=[
 {id:1,name:"Coal Rank",color:"black",price:7.99},
 {id:2,name:"Gold Rank",color:"gold",price:10.99},
@@ -53,49 +140,62 @@ const ranks=[
 ];
 
 const grid=document.getElementById("rankGrid");
+
 ranks.forEach(rank=>{
-    const card=document.createElement("div");
-    card.className="rank-item";
-    card.innerHTML=`
-    <div class="rank-name" style="color:${rank.color}">${rank.name}</div>
-    <div class="rank-price">$${rank.price}</div>
-    <button class="btn-buy" onclick="buyNow(${rank.id})">Buy Now</button>`;
-    grid.appendChild(card);
+const card=document.createElement("div");
+card.className="rank-item";
+
+card.innerHTML=`
+<div class="rank-name" style="color:${rank.color}">${rank.name}</div>
+<div class="rank-price">$${rank.price}</div>
+<button class="btn-buy" onclick="buyNow(${rank.id})">Buy Now</button>
+`;
+
+grid.appendChild(card);
 });
 
-// Get Discord username from localStorage (set after OAuth login)
-const discordUser = localStorage.getItem("discordUser") || "Unknown User";
+const discordUser = localStorage.getItem("discordUser");
+
+if(!discordUser){
+alert("Please login with Discord first.");
+window.location.href="/watermc_store.html";
+}
 
 function buyNow(id){
-    const rank = ranks.find(r=>r.id===id);
 
-    const confirmBuy = confirm(`Buy ${rank.name} for $${rank.price}?`);
-    if(!confirmBuy) return;
+const rank=ranks.find(r=>r.id===id);
 
-    const orderID = Math.floor(1000 + Math.random()*9000);
+const confirmBuy=confirm(`Buy ${rank.name} for $${rank.price}?`);
 
-    // Send to Discord Webhook
-    fetch("https://discord.com/api/webhooks/1482740372584140862/0FNPQ3kAxfcCKD9NP7_KIAjbMDnGqlvsreq5CPnmb0z5Yza6ClRn8CwZHPAAKWHZk6iy",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({
-            content:"<@&1475169763528282272>",
-            embeds:[{
-                title:"🛒 New Store Purchase",
-                color:3447003,
-                fields:[
-                    {name:"💬 Discord User", value:discordUser, inline:true},
-                    {name:"💎 Rank", value:rank.name, inline:true},
-                    {name:"💰 Price", value:`$${rank.price}`, inline:true},
-                    {name:"📦 Order ID", value:`#${orderID}`, inline:false}
-                ],
-                footer:{text:"WaterMC Store"}
-            }]
-        })
-    });
+if(!confirmBuy) return;
 
-    alert(`Your order has been sent! Discord user: ${discordUser}`);
+const orderID="WM"+Date.now();
+
+fetch("YOUR_WEBHOOK_URL",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+content:"<@&1475169763528282272>",
+embeds:[{
+title:"🛒 New Store Purchase",
+color:3447003,
+fields:[
+{name:"💬 Discord User",value:discordUser,inline:true},
+{name:"💎 Rank",value:rank.name,inline:true},
+{name:"💰 Price",value:`$${rank.price}`,inline:true},
+{name:"📦 Order ID",value:orderID,inline:false}
+],
+footer:{text:"WaterMC Store"}
+}]
+})
+});
+
+alert("Order sent! Staff will process it soon.");
+
 }
+
 </script>
 
 </body>
