@@ -1,11 +1,10 @@
-require('.env').config(); // load variables from .env
 const express = require("express");
 const fetch = require("node-fetch");
 const path = require("path");
+require("dotenv").config(); // Load .env variables
 
 const app = express();
 
-// Environment variables
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
@@ -13,16 +12,11 @@ const REDIRECT_URI = process.env.REDIRECT_URI;
 // Serve static files
 app.use(express.static(path.join(__dirname, "/")));
 
-// Root route
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "watermc_store.html"));
-});
-
-// Discord OAuth callback
+// Discord OAuth2
 app.get("/auth", async (req, res) => {
   try {
     const code = req.query.code;
-    if (!code) return res.send("❌ No code from Discord.");
+    if (!code) return res.send("No code provided by Discord.");
 
     const params = new URLSearchParams();
     params.append("client_id", CLIENT_ID);
@@ -38,17 +32,13 @@ app.get("/auth", async (req, res) => {
     });
 
     const tokenText = await tokenResponse.text();
+
     let tokenData;
     try {
       tokenData = JSON.parse(tokenText);
-    } catch {
-      console.error("Token parse error:", tokenText);
-      return res.send("❌ Failed to get token. Check server logs.");
-    }
-
-    if (tokenData.error) {
-      console.error("Discord token error:", tokenData);
-      return res.send(`❌ ${tokenData.error_description || tokenData.error}`);
+    } catch (e) {
+      console.error("Discord token response:", tokenText);
+      return res.send("❌ Failed to get Discord token. Check server logs.");
     }
 
     const userResponse = await fetch("https://discord.com/api/users/@me", {
@@ -59,12 +49,12 @@ app.get("/auth", async (req, res) => {
     let user;
     try {
       user = JSON.parse(userText);
-    } catch {
-      console.error("User parse error:", userText);
-      return res.send("❌ Failed to get user info.");
+    } catch (e) {
+      console.error("Discord user response:", userText);
+      return res.send("❌ Failed to get Discord user info. Check server logs.");
     }
 
-    const username = user.global_name || user.username || "Unknown User";
+    const username = user.global_name || user.username;
 
     res.send(`
       <script>
@@ -75,9 +65,9 @@ app.get("/auth", async (req, res) => {
 
   } catch (err) {
     console.error("OAuth error:", err);
-    res.status(500).send("❌ Internal server error during Discord OAuth.");
+    res.status(500).send("Internal server error during Discord OAuth.");
   }
 });
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, "0.0.0.0", () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
