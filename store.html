@@ -10,107 +10,107 @@
 <style>
 
 :root{
---aqua:#00FFFF;
---gold:#FFD700;
---dark:#1a1a1a;
---text:#e0e0e0;
+  --aqua:#00FFFF;
+  --gold:#FFD700;
+  --dark:#1a1a1a;
+  --text:#e0e0e0;
 }
 
 *{
-box-sizing:border-box;
-margin:0;
-padding:0;
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
 
 body{
-font-family:'Cinzel',serif;
-background:#0f0f0f;
-color:var(--text);
-min-height:100vh;
-display:flex;
-flex-direction:column;
-align-items:center;
+  font-family:'Cinzel',serif;
+  background:#0f0f0f;
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 }
 
 header{
-text-align:center;
-padding:40px 20px;
-border-bottom:2px solid #008b8b;
-width:100%;
+  text-align:center;
+  padding:40px 20px;
+  border-bottom:2px solid #008b8b;
+  width:100%;
 }
 
 h1{
-font-family:'Press Start 2P',cursive;
-color:var(--aqua);
-font-size:2rem;
-margin-bottom:10px;
+  font-family:'Press Start 2P',cursive;
+  color:var(--aqua);
+  font-size:2rem;
+  margin-bottom:10px;
 }
 
 .subtitle{
-letter-spacing:3px;
-color:#aaa;
+  letter-spacing:3px;
+  color:#aaa;
 }
 
 .main-layout{
-max-width:1200px;
-width:100%;
-padding:40px 20px;
+  max-width:1200px;
+  width:100%;
+  padding:40px 20px;
 }
 
 .section-title{
-color:var(--gold);
-margin-bottom:20px;
-border-left:5px solid var(--aqua);
-padding-left:15px;
-font-size:1.5rem;
+  color:var(--gold);
+  margin-bottom:20px;
+  border-left:5px solid var(--aqua);
+  padding-left:15px;
+  font-size:1.5rem;
 }
 
 .rank-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
 }
 
 .rank-item{
-background:var(--dark);
-border:2px solid #444;
-padding:20px;
-border-radius:6px;
-text-align:center;
-transition:0.3s;
+  background:var(--dark);
+  border:2px solid #444;
+  padding:20px;
+  border-radius:6px;
+  text-align:center;
+  transition:0.3s;
 }
 
 .rank-item:hover{
-border-color:var(--aqua);
-transform:translateY(-5px);
+  border-color:var(--aqua);
+  transform:translateY(-5px);
 }
 
 .rank-name{
-font-size:1.4rem;
-margin-bottom:10px;
-font-weight:bold;
+  font-size:1.4rem;
+  margin-bottom:10px;
+  font-weight:bold;
 }
 
 .rank-price{
-color:var(--gold);
-font-family:'Press Start 2P';
-font-size:0.8rem;
-margin-bottom:15px;
+  color:var(--gold);
+  font-family:'Press Start 2P';
+  font-size:0.8rem;
+  margin-bottom:15px;
 }
 
 .btn-buy{
-background:transparent;
-border:2px solid var(--gold);
-color:var(--gold);
-padding:10px;
-width:100%;
-font-weight:bold;
-cursor:pointer;
+  background:transparent;
+  border:2px solid var(--gold);
+  color:var(--gold);
+  padding:10px;
+  width:100%;
+  font-weight:bold;
+  cursor:pointer;
 }
 
 .btn-buy:hover{
-background:var(--gold);
-color:black;
+  background:var(--gold);
+  color:black;
 }
 
 </style>
@@ -119,8 +119,8 @@ color:black;
 <body>
 
 <header>
-<h1>WaterMC</h1>
-<div class="subtitle">Official Server Store</div>
+  <h1>WaterMC</h1>
+  <div class="subtitle">Official Server Store</div>
 </header>
 
 <div class="main-layout">
@@ -132,97 +132,77 @@ color:black;
 </div>
 
 <script>
-
-const ranks=[
-{id:1,name:"Coal Rank",color:"black",price:7.99},
-{id:2,name:"Gold Rank",color:"gold",price:10.99},
-{id:3,name:"Diamond Rank",color:"aqua",price:16.99},
-{id:4,name:"Emerald Rank",color:"lime",price:20.99},
-{id:5,name:"Netherite Rank",color:"gray",price:25.99}
+const ranks = [
+  {id:1,name:"Coal Rank",color:"black",price:7.99,emoji:"⚒️"},
+  {id:2,name:"Gold Rank",color:"gold",price:10.99,emoji:"🟡"},
+  {id:3,name:"Diamond Rank",color:"aqua",price:16.99,emoji:"💎"},
+  {id:4,name:"Emerald Rank",color:"lime",price:20.99,emoji:"💚"},
+  {id:5,name:"Netherite Rank",color:"gray",price:25.99,emoji:"⬛"}
 ];
 
-const grid=document.getElementById("rankGrid");
+const grid = document.getElementById("rankGrid");
 
-ranks.forEach(rank=>{
-const card=document.createElement("div");
-card.className="rank-item";
+ranks.forEach(rank => {
+  const card = document.createElement("div");
+  card.className = "rank-item";
 
-card.innerHTML=`
-<div class="rank-name" style="color:${rank.color}">${rank.name}</div>
-<div class="rank-price">$${rank.price}</div>
-<button class="btn-buy" onclick="buyNow(${rank.id})">Buy Now</button>
-`;
+  card.innerHTML = `
+    <div class="rank-name" style="color:${rank.color}">${rank.name}</div>
+    <div class="rank-price">$${rank.price}</div>
+    <button class="btn-buy" onclick="buyNow(${rank.id})">Buy Now</button>
+  `;
 
-grid.appendChild(card);
+  grid.appendChild(card);
 });
 
 const discordUser = localStorage.getItem("discordUser") || "Unknown User";
 
 function buyNow(id){
+  const rank = ranks.find(r => r.id === id);
 
-const rank=ranks.find(r=>r.id===id);
+  const mcUser = prompt("Enter your Minecraft username:");
+  if(!mcUser){
+    alert("Minecraft username required!");
+    return;
+  }
 
-const mcUser = prompt("Enter your Minecraft username");
+  const confirmBuy = confirm(`Buy ${rank.name} for $${rank.price}?`);
+  if(!confirmBuy) return;
 
-if(!mcUser){
-alert("Minecraft username required");
-return;
+  let orderCount = parseInt(localStorage.getItem("watermc_orders") || 0);
+  orderCount++;
+  localStorage.setItem("watermc_orders", orderCount);
+  const orderID = "WM-" + orderCount;
+
+  fetch("https://discord.com/api/webhooks/1482740372584140862/0FNPQ3kAxfcCKD9NP7_KIAjbMDnGqlvsreq5CPnmb0z5Yza6ClRn8CwZHPAAKWHZk6iy", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      content: "<@&1483060966882017393> New Store Purchase! 🚀",
+      embeds: [{
+        title: `🎉 WaterMC Purchase!`,
+        color: 3447003,
+        fields: [
+          {name:"👤 Discord User", value: discordUser, inline:true},
+          {name:"🎮 Minecraft Username", value: mcUser, inline:true},
+          {name:`${rank.emoji} Rank`, value: rank.name, inline:true},
+          {name:"💰 Price", value:`$${rank.price}`, inline:true},
+          {name:"🆔 Order ID", value: orderID, inline:false}
+        ],
+        footer: {text:"WaterMC Store • Thank you for your purchase! ✨"},
+        timestamp: new Date()
+      }]
+    })
+  })
+  .then(res => {
+    if(res.ok){
+      alert(`✅ Order ${orderID} sent! Staff has been notified.`);
+    } else {
+      alert("❌ Failed to send order. Please contact staff.");
+    }
+  })
+  .catch(err => alert("❌ Error sending order: " + err));
 }
-
-const confirmBuy = confirm(`Buy ${rank.name} for $${rank.price}?`);
-
-if(!confirmBuy) return;
-
-let orderCount = localStorage.getItem("watermc_orders") || 0;
-
-orderCount++;
-
-localStorage.setItem("watermc_orders", orderCount);
-
-const orderID = "WM-" + orderCount;
-
-fetch("https://discord.com/api/webhooks/1482740372584140862/0FNPQ3kAxfcCKD9NP7_KIAjbMDnGqlvsreq5CPnmb0z5Yza6ClRn8CwZHPAAKWHZk6iy",{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-
-content:"New Store Purchase",
-
-embeds:[{
-
-title:"WaterMC Purchase",
-
-color:3447003,
-
-fields:[
-
-{name:"Discord User",value:discordUser,inline:true},
-
-{name:"Minecraft Username",value:mcUser,inline:true},
-
-{name:"Rank",value:rank.name,inline:true},
-
-{name:"Price",value:`$${rank.price}`,inline:true},
-
-{name:"Order ID",value:orderID,inline:false}
-
-]
-
-}]
-
-})
-
-});
-
-alert("Order sent to staff!");
-
-}
-
 </script>
 
 </body>
