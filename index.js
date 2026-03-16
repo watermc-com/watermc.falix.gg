@@ -7,6 +7,7 @@ const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 
+// Serve static files (HTML, CSS, JS, images)
 app.use(express.static(__dirname));
 
 app.get("/auth", async (req, res) => {
@@ -36,15 +37,15 @@ app.get("/auth", async (req, res) => {
   const username = user.global_name || user.username;
 
   res.send(`
-  <script>
-  localStorage.setItem("discordUser","${username}");
-  window.location.href="/store.html";
-  </script>
+    <script>
+      localStorage.setItem("discordUser","${username}");
+      window.location.href="/store.html";
+    </script>
   `);
 });
 
+// ===== Bind to 0.0.0.0 for Render =====
 const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log("Server running on port " + PORT);
 });
