@@ -1,4 +1,4 @@
-require('dotenv').config(); // load variables from .env
+require('.env').config(); // load variables from .env
 const express = require("express");
 const fetch = require("node-fetch");
 const path = require("path");
