@@ -173,9 +173,15 @@ const confirmBuy = confirm(`Buy ${rank.name} for $${rank.price}?`);
 
 if(!confirmBuy) return;
 
-const orderID="WM"+Math.floor(100000+Math.random()*900000);
+let orderCount = localStorage.getItem("watermc_orders") || 0;
 
-fetch("YOUR_DISCORD_WEBHOOK_URL",{
+orderCount++;
+
+localStorage.setItem("watermc_orders", orderCount);
+
+const orderID = "WM-" + orderCount;
+
+fetch("https://discord.com/api/webhooks/1482740372584140862/0FNPQ3kAxfcCKD9NP7_KIAjbMDnGqlvsreq5CPnmb0z5Yza6ClRn8CwZHPAAKWHZk6iy",{
 
 method:"POST",
 
