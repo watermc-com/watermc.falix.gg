@@ -105,16 +105,18 @@ color:black;
 
 <script>
 
+// 🎯 RANK DATA
 const ranks = [
-{id:1,name:"Coal Rank",color:"black",price:7.99,emoji:"⚒️"},
-{id:2,name:"Gold Rank",color:"gold",price:10.99,emoji:"🟡"},
-{id:3,name:"Diamond Rank",color:"aqua",price:16.99,emoji:"💎"},
-{id:4,name:"Emerald Rank",color:"lime",price:20.99,emoji:"💚"},
-{id:5,name:"Netherite Rank",color:"gray",price:25.99,emoji:"⬛"}
+{id:1,name:"Coal Rank",color:"black",price:7.99},
+{id:2,name:"Gold Rank",color:"gold",price:10.99},
+{id:3,name:"Diamond Rank",color:"aqua",price:16.99},
+{id:4,name:"Emerald Rank",color:"lime",price:20.99},
+{id:5,name:"Netherite Rank",color:"gray",price:25.99}
 ];
 
 const grid = document.getElementById("rankGrid");
 
+// 🎨 CREATE UI
 ranks.forEach(rank=>{
 const card = document.createElement("div");
 card.className="rank-item";
@@ -128,7 +130,7 @@ card.innerHTML=`
 grid.appendChild(card);
 });
 
-// 🔐 CHECK LOGIN
+// 🔐 LOGIN CHECK
 const discordUser = localStorage.getItem("discordUser");
 
 if(!discordUser){
@@ -150,36 +152,53 @@ return;
 const confirmBuy = confirm(`Buy ${rank.name} for $${rank.price}?`);
 if(!confirmBuy) return;
 
-// ⚡ RANDOM ORDER ID (GLOBAL SAFE)
+// 🆔 ORDER ID
 const orderID = "WM-" + Date.now();
 
+// 🎯 STAFF ROLE ID
+const ROLE_ID = "1475169763528282272";
+
+// 📡 SEND WEBHOOK
 fetch("https://discord.com/api/webhooks/1482740372584140862/0FNPQ3kAxfcCKD9NP7_KIAjbMDnGqlvsreq5CPnmb0z5Yza6ClRn8CwZHPAAKWHZk6iy",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
 body: JSON.stringify({
-content:"New Purchase 🚀",
+
+content: `<@&${ROLE_ID}> 🚨 **New Purchase Alert!**`,
+
 embeds:[{
-title:"WaterMC Order",
-color:3447003,
+title:"🛒 WaterMC Store Order",
+color: 0x00FFFF,
+
+thumbnail:{
+url:"https://cdn-icons-png.flaticon.com/512/891/891462.png"
+},
+
 fields:[
-{name:"Discord User",value:discordUser},
-{name:"Minecraft Username",value:mcUser},
-{name:"Rank",value:rank.name},
-{name:"Price",value:"$"+rank.price},
-{name:"Order ID",value:orderID}
+{name:"👤 Discord User",value:`\`${discordUser}\``,inline:true},
+{name:"🎮 Minecraft IGN",value:`\`${mcUser}\``,inline:true},
+{name:"💎 Rank",value:`**${rank.name}**`,inline:true},
+{name:"💰 Price",value:`$${rank.price}`,inline:true},
+{name:"🆔 Order ID",value:`\`${orderID}\``}
 ],
+
+footer:{
+text:"WaterMC Store • Auto System"
+},
+
 timestamp:new Date()
 }]
+
 })
 })
 .then(res=>{
 if(res.ok){
-alert("✅ Order Sent! ID: "+orderID);
+alert("✅ Order Sent! ID: " + orderID);
 }else{
 alert("❌ Failed to send order");
 }
 })
-.catch(err=>alert("Error: "+err));
+.catch(err=>alert("Error: " + err));
 
 }
 
