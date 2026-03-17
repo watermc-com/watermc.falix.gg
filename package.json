@@ -1,12 +1,17 @@
 {
   "name": "watermc-store",
   "version": "1.0.0",
+  "description": "WaterMC Minecraft Store with Discord OAuth",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "express": "^4.18.2",
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^2.6.7",
+    "dotenv": "^16.4.5"
   }
 }
