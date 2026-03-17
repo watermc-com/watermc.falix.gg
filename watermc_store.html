@@ -1,4 +1,3 @@
-<!-- watermc_store.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -71,8 +70,6 @@ h1 {
     padding: 30px; 
     text-align: center; 
     transition: 0.3s; 
-    position: relative; 
-    box-shadow: 0 10px 20px rgba(0,0,0,0.7); 
     cursor: pointer; 
 }
 
@@ -85,18 +82,15 @@ h1 {
 .icon { 
     font-size: 4rem; 
     margin-bottom: 20px; 
-    display: block; 
 }
 
 .card h2 { 
     color: var(--gold); 
     margin-bottom: 15px; 
-    font-weight: 700; 
 }
 
 .card p { 
     margin-bottom: 25px; 
-    line-height: 1.5; 
     color: #ccc; 
 }
 
@@ -104,20 +98,14 @@ h1 {
     background: #333; 
     color: white; 
     border: 2px solid var(--gold); 
-    padding: 12px 25px; 
-    font-family: 'Cinzel', serif; 
-    font-weight: bold; 
-    font-size: 1rem; 
-    cursor: pointer; 
-    text-transform: uppercase; 
-    transition: all 0.2s; 
+    padding: 12px; 
     width: 100%; 
+    cursor: pointer; 
 }
 
 .btn:hover { 
     background: var(--gold); 
     color: black; 
-    box-shadow: 0 0 10px var(--gold); 
 }
 </style>
 </head>
@@ -130,29 +118,36 @@ h1 {
 </header>
 
 <div class="store-container">
-    <!-- Buy Ranks -->
-    <div class="card" onclick="redirectDiscord()">
+
+    <!-- BUY RANK -->
+    <div class="card" onclick="redirectDiscord('rank')">
         <span class="icon">👑</span>
         <h2>Buy Ranks</h2>
         <p>Ascend the hierarchy. Unlock perks and fly rights.</p>
         <button class="btn">Buy Rank</button>
     </div>
 
-    <!-- Buy Coins -->
-    <div class="card" onclick="redirectDiscord()">
+    <!-- BUY COINS -->
+    <div class="card" onclick="redirectDiscord('coin')">
         <span class="icon">💰</span>
         <h2>Buy Coins</h2>
         <p>Acquire the currency of the realm.</p>
         <button class="btn">Buy Coins</button>
     </div>
+
 </div>
 
 <script>
-const CLIENT_ID = "1482983042527264920"; // Replace with your actual client ID
+const CLIENT_ID = "1482983042527264920";
 const REDIRECT_URI = "https://watermc-store.onrender.com/auth";
 
-function redirectDiscord() {
+function redirectDiscord(type) {
+
+    // SAVE WHAT USER CLICKED
+    localStorage.setItem("buyType", type);
+
     const url = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify`;
+
     window.location.href = url;
 }
 </script>
