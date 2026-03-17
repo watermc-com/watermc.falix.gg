@@ -6,23 +6,31 @@ require("dotenv").config();
 const app = express();
 
 // 🔐 ENV VARIABLES
-const CLIENT_ID = process.env.CLIENT_ID || "YOUR_CLIENT_ID";
-const CLIENT_SECRET = process.env.CLIENT_SECRET || "YOUR_CLIENT_SECRET";
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI || "https://watermc-store.onrender.com/auth";
 
-// 📁 Serve static files (HTML, CSS, JS)
+// 📁 Serve static files
 app.use(express.static(path.join(__dirname, "/")));
 
-// 🔗 DISCORD OAUTH ROUTE
+// 🔗 DISCORD OAUTH ROUTE (FULL FIXED)
 app.get("/auth", async (req, res) => {
   try {
     const code = req.query.code;
+
+    console.log("👉 Code:", code);
 
     if (!code) {
       return res.send("❌ No code provided by Discord.");
     }
 
-    // 📦 Prepare token request
+    // ❗ Check env first
+    if (!CLIENT_ID || !CLIENT_SECRET) {
+      console.error("❌ Missing CLIENT_ID or CLIENT_SECRET");
+      return res.send("❌ Server config error (env missing)");
+    }
+
+    // 📦 Prepare request
     const params = new URLSearchParams();
     params.append("client_id", CLIENT_ID);
     params.append("client_secret", CLIENT_SECRET);
@@ -30,7 +38,7 @@ app.get("/auth", async (req, res) => {
     params.append("code", code);
     params.append("redirect_uri", REDIRECT_URI);
 
-    // 🔄 Request access token
+    // 🔄 Get token
     const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
       method: "POST",
       headers: {
@@ -39,37 +47,54 @@ app.get("/auth", async (req, res) => {
       body: params.toString()
     });
 
-    const tokenData = await tokenResponse.json();
+    const tokenText = await tokenResponse.text();
+    console.log("👉 Token Raw:", tokenText);
 
-    if (!tokenData.access_token) {
-      console.error("❌ Token Error:", tokenData);
-      return res.send("❌ Failed to get Discord access token.");
+    let tokenData;
+    try {
+      tokenData = JSON.parse(tokenText);
+    } catch (err) {
+      console.error("❌ Token parse error");
+      return res.send("❌ Failed to parse token response");
     }
 
-    // 👤 Get Discord user info
+    if (!tokenData.access_token) {
+      console.error("❌ No access token:", tokenData);
+      return res.send("❌ Discord token error");
+    }
+
+    // 👤 Get user info
     const userResponse = await fetch("https://discord.com/api/users/@me", {
       headers: {
         Authorization: `Bearer ${tokenData.access_token}`
       }
     });
 
-    const userData = await userResponse.json();
+    const userText = await userResponse.text();
+    console.log("👉 User Raw:", userText);
 
-    if (!userData.id) {
-      console.error("❌ User Error:", userData);
-      return res.send("❌ Failed to fetch Discord user.");
+    let userData;
+    try {
+      userData = JSON.parse(userText);
+    } catch (err) {
+      console.error("❌ User parse error");
+      return res.send("❌ Failed to parse user data");
     }
 
-    const username = userData.global_name || userData.username || "Unknown";
+    if (!userData.id) {
+      console.error("❌ Invalid user data:", userData);
+      return res.send("❌ Failed to fetch Discord user");
+    }
 
-    // 🚀 Redirect logic based on what user clicked
+    const username = (userData.global_name || userData.username || "Unknown")
+      .replace(/'/g, "\\'"); // prevent JS break
+
+    // 🚀 FINAL REDIRECT
     res.send(`
       <script>
 
-        // Save Discord username
-        localStorage.setItem("discordUser", "${username}");
+        localStorage.setItem("discordUser", '${username}');
 
-        // Get what user selected before login
         const type = localStorage.getItem("buyType");
 
         if(type === "rank"){
@@ -79,7 +104,6 @@ app.get("/auth", async (req, res) => {
           window.location.href = "/coin.html";
         } 
         else {
-          // fallback safety
           window.location.href = "/watermc_store.html";
         }
 
@@ -87,8 +111,8 @@ app.get("/auth", async (req, res) => {
     `);
 
   } catch (error) {
-    console.error("🔥 OAuth Error:", error);
-    res.status(500).send("❌ Internal server error during Discord login.");
+    console.error("🔥 FULL ERROR:", error);
+    res.send("❌ Internal server error (check Render logs)");
   }
 });
 
