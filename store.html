@@ -138,6 +138,22 @@ alert("Please login with Discord first!");
 window.location.href = "watermc_store.html";
 }
 
+// 🧠 UNIQUE 5-DIGIT ORDER ID (NO DUPLICATES PER BROWSER)
+function generateUniqueOrderID(){
+
+let usedIDs = JSON.parse(localStorage.getItem("usedOrderIDs")) || [];
+
+let newID;
+do {
+newID = Math.floor(10000 + Math.random() * 90000);
+} while(usedIDs.includes(newID));
+
+usedIDs.push(newID);
+localStorage.setItem("usedOrderIDs", JSON.stringify(usedIDs));
+
+return newID;
+}
+
 // 🚀 BUY FUNCTION
 function buyNow(id){
 
@@ -152,8 +168,8 @@ return;
 const confirmBuy = confirm(`Buy ${rank.name} for $${rank.price}?`);
 if(!confirmBuy) return;
 
-// 🆔 ORDER ID
-const orderID = "WM-" + Date.now();
+// 🆔 GENERATE UNIQUE ID
+const orderID = generateUniqueOrderID();
 
 // 🎯 STAFF ROLE ID
 const ROLE_ID = "1475169763528282272";
@@ -183,7 +199,7 @@ fields:[
 ],
 
 footer:{
-text:"WaterMC Store • Auto System"
+text:"WaterMC Store"
 },
 
 timestamp:new Date()
