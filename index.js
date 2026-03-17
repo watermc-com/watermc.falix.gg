@@ -5,26 +5,22 @@ require("dotenv").config();
 
 const app = express();
 
-// 🔐 ENV VARIABLES
-const CLIENT_ID = process.env.CLIENT_ID || "YOUR_CLIENT_ID";
-const CLIENT_SECRET = process.env.CLIENT_SECRET || "YOUR_CLIENT_SECRET";
-const REDIRECT_URI = process.env.REDIRECT_URI || "https://watermc-store.onrender.com/auth";
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const REDIRECT_URI = "https://watermc-store.onrender.com/auth";
 
-// 📁 Serve static files
 app.use(express.static(path.join(__dirname, "/")));
 
-// 🔗 DISCORD OAUTH ROUTE
 app.get("/auth", async (req, res) => {
   try {
     const code = req.query.code;
 
     if (!code) {
-      return res.send("❌ No code provided by Discord.");
+      return res.send("❌ No code provided");
     }
 
     console.log("👉 Code:", code);
 
-    // 📦 Prepare token request
     const params = new URLSearchParams();
     params.append("client_id", CLIENT_ID);
     params.append("client_secret", CLIENT_SECRET);
@@ -32,85 +28,85 @@ app.get("/auth", async (req, res) => {
     params.append("code", code);
     params.append("redirect_uri", REDIRECT_URI);
 
-    // 🛑 Small delay (avoid rate limit)
-    await new Promise(r => setTimeout(r, 500));
+    await new Promise(r => setTimeout(r, 800));
 
-    // 🔄 Request access token (FIXED HEADERS)
-    const tokenResponse = await fetch("https://discordapp.com/api/oauth2/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "User-Agent": "Mozilla/5.0",
-        "Accept": "application/json"
-      },
-      body: params.toString()
-    });
-
-    const tokenText = await tokenResponse.text();
-    console.log("👉 Token Raw:", tokenText.substring(0, 100));
-
+    // 🔁 TRY BOTH ENDPOINTS (AUTO FIX)
     let tokenData;
-    try {
-      tokenData = JSON.parse(tokenText);
-    } catch (err) {
-      console.error("❌ Token parse error:", tokenText);
-      return res.send("❌ Discord blocked request (Cloudflare). Try again after 1 min.");
+
+    for (const url of [
+      "https://discord.com/api/oauth2/token",
+      "https://discordapp.com/api/oauth2/token"
+    ]) {
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "Mozilla/5.0",
+            "Accept": "application/json"
+          },
+          body: params.toString()
+        });
+
+        const text = await response.text();
+        console.log("👉 Raw response:", text.substring(0, 120));
+
+        try {
+          tokenData = JSON.parse(text);
+          if (tokenData.access_token) break;
+        } catch {}
+      } catch (err) {
+        console.log("❌ Failed URL:", url);
+      }
     }
 
-    if (!tokenData.access_token) {
-      console.error("❌ Token Error:", tokenData);
-      return res.send("❌ Failed to get Discord access token.");
+    if (!tokenData || !tokenData.access_token) {
+      console.error("❌ Token Failed:", tokenData);
+      return res.send("❌ Discord token failed (rate limit or config issue)");
     }
 
-    // 👤 Fetch user info
-    const userResponse = await fetch("https://discord.com/api/users/@me", {
+    // 👤 GET USER
+    const userRes = await fetch("https://discord.com/api/users/@me", {
       headers: {
         Authorization: `Bearer ${tokenData.access_token}`,
         "User-Agent": "Mozilla/5.0"
       }
     });
 
-    const userData = await userResponse.json();
+    const user = await userRes.json();
 
-    if (!userData.id) {
-      console.error("❌ User Error:", userData);
-      return res.send("❌ Failed to fetch Discord user.");
+    if (!user.id) {
+      console.error("❌ User Fetch Error:", user);
+      return res.send("❌ Failed to fetch user");
     }
 
-    const username = userData.global_name || userData.username || "Unknown";
+    const username = user.global_name || user.username;
 
-    console.log("✅ Logged in user:", username);
+    console.log("✅ USER:", username);
 
-    // 🚀 Redirect with stored data
     res.send(`
       <script>
-
         localStorage.setItem("discordUser", "${username}");
-
         const type = localStorage.getItem("buyType");
 
         if(type === "rank"){
           window.location.href = "/store.html";
-        } 
-        else if(type === "coin"){
+        } else if(type === "coin"){
           window.location.href = "/coin.html";
-        } 
-        else {
+        } else {
           window.location.href = "/watermc_store.html";
         }
-
       </script>
     `);
 
-  } catch (error) {
-    console.error("🔥 OAuth Error:", error);
-    res.status(500).send("❌ Internal server error during Discord login.");
+  } catch (err) {
+    console.error("🔥 FINAL ERROR:", err);
+    res.send("❌ ERROR: " + err.message);
   }
 });
 
-// 🌐 START SERVER
 const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log("🚀 WaterMC Store running on port " + PORT);
+  console.log("🚀 Server running on port " + PORT);
 });
