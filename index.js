@@ -36,7 +36,7 @@ app.get("/auth", async (req, res) => {
     await new Promise(r => setTimeout(r, 500));
 
     // 🔄 Request access token (FIXED HEADERS)
-    const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
+    const tokenResponse = await fetch("https://discordapp.com/api/oauth2/token", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
