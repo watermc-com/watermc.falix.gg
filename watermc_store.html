@@ -146,7 +146,7 @@ function redirectDiscord(type) {
     // SAVE WHAT USER CLICKED
     localStorage.setItem("buyType", type);
 
-    const url = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify`;
+  const url = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify&prompt=consent`;
 
     window.location.href = url;
 }
